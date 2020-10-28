@@ -36,5 +36,3 @@ axes[1].set_xlabel('weeks since start of epidemic')
 axes[1].set_ylabel('reward r(t)')
 
 print('total reward', np.sum(rewards))
-
-    

@@ -4,7 +4,14 @@ import numpy as np
 import virl
 
 def policy(states,actions):
-    print("")
+    infected = states[1]
+    quarantined = states[2]
+    max_state = max(states)
+    min_state = min(states)
+    if(max_state == infected):
+        return 1
+    else:
+        return 2
 
 env = virl.Epidemic(stochastic = False, noisy = False)
 
@@ -25,13 +32,13 @@ actions = np.linspace(0,3,4)
 print(actions)
 
 while not done:
-    for action in actions:
-        s,r,done,i = env.step(action = int(action))
-        states.append(s)
-        rewards.append(r)
-        
-print("\nFinal state: " + "\nSusceptible: " + str(s[0]) + "\nInfectious: " + str(s[1])
-      + "\nQuarantined: " + str(s[2]) + "\nRecovered: " + str(s[3]))
+    action = policy(state,actions)
+    state,r,done,i = env.step(action = (action))
+    states.append(state)
+    rewards.append(r)
+    
+print("\nFinal state: " + "\nSusceptible: " + str(state[0]) + "\nInfectious: " + str(state[1])
+      + "\nQuarantined: " + str(state[2]) + "\nRecovered: " + str(state[3]))
 
 fig,axes = plt.subplots(1,2,figsize=(20,8))
 labels = ['s[0]: susceptible','s[1]: infectious','s[2]: quarantined','s[3]: recovereds']
@@ -42,7 +49,7 @@ for i in range(4):
 axes[0].set_xlabel('weeks since start of epidemic')
 axes[0].set_ylabel('State s(t)')
 axes[0].legend()
-axes[1].plot(rewards);
+axes[1].plot(rewards)
 axes[1].set_title('Reward')
 axes[1].set_xlabel('weeks since start of epidemic')
 axes[1].set_ylabel('reward r(t)')

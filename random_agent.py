@@ -13,6 +13,7 @@ done = False
 
 s = env.reset()
 states.append(s)
+print(states)
 
 while not done:
     s,r,done,i = env.step(action= np.random.choice(env.action_space.n))

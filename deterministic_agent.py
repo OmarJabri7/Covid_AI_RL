@@ -2,6 +2,11 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import virl
+import math
+
+gradient_r = 0
+gradient_s = 0
+gradient_i = 0
 
 def policy_1(states,actions,week):
     print("\nStep state (" + str(week) + "): " + "\nSusceptible: " + str(state[0]) + "\nInfectious: " + str(state[1])
@@ -42,7 +47,7 @@ def policy_2(states,actions,week):
     else:
         return 3
 
-def policy_3(states,actions,week):
+def delay_lockdown(states,actions,week):
     print("\nStep state (" + str(week) + "): " + "\nSusceptible: " + str(state[0]) + "\nInfectious: " + str(state[1])
       + "\nQuarantined: " + str(state[2]) + "\nRecovered: " + str(state[3]))
     susceptible = states[0]
@@ -55,15 +60,46 @@ def policy_3(states,actions,week):
     social_distancing = actions[3]
     max_state = max(states) # Max is always going to be susceptible (Do not use)
     min_state = min(states)
-    if(infected < quarantined):
-        print("Action chosen: track and trace")
-        return track_and_trace
-    elif(quarantined < infected):
+    if(week >= 10):
+        return full_lockdown
+    else:
+        return none
+    
+def policy_3(states,actions,week,gradient_r,gradient_s):
+    print("\nStep state (" + str(week) + "): " + "\nSusceptible: " + str(state[0]) + "\nInfectious: " + str(state[1])
+      + "\nQuarantined: " + str(state[2]) + "\nRecovered: " + str(state[3]))
+    susceptible = states[0]
+    infected = states[1]
+    quarantined = states[2]
+    recovereds = states[3]
+    none = actions[0]
+    full_lockdown = actions[1]
+    track_and_trace = actions[2]
+    social_distancing = actions[3]
+    max_state = max(states) # Max is always going to be susceptible (Do not use)
+    min_state = min(states)
+    if(week >=42):
         print("Action chosen: full lockdown")
         return full_lockdown
     else:
-        print("Action chosen: social distancing")
-        return social_distancing
+        if(quarantined == 0.0):
+            quarantined = 1
+        if(susceptible > recovereds and infected > quarantined):
+            print("Action chosen: Track and Trace")
+            return social_distancing
+        #elif(abs(math.log(susceptible) - math.log(recovereds)) <= 1):
+         #   print("Action chosen: track and trace special")
+          #  return social_distancing
+       # elif(math.log(quarantined) < math.log(infected)):
+        #    print("Action chosen: track and trace")
+         #   return track_and_trace
+        #elif(math.log(infected) > math.log(susceptible)/2):
+         #   print("Action chosen: social distancing")
+          #  return social_distancing
+        else:
+            print("Action chosen: No mitigations")
+            return none
+    
     
 env = virl.Epidemic(stochastic = False, noisy = False)
 
@@ -82,9 +118,14 @@ states.append(state)
 
 actions = [0,1,2,3]
 print(actions)
-week = 0
+week = 1
 while not done:
-    action = policy_3(state,actions,week)
+    gradient_r+= state[3]/week
+    gradient_s= math.log(state[0])/week
+    gradient_i= math.log(state[1])/week
+    print("Gradient of Susceptible: " + str(gradient_s))
+    print("Gradient of infected: " + str(gradient_i))
+    action = policy_3(state,actions,week,gradient_r,gradient_s)
     state,r,done,i = env.step(action = (action))
     states.append(state)
     rewards.append(r)

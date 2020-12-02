@@ -37,7 +37,7 @@ class DeepQNetwork(nn.Module):
         self.fc1 = nn.Linear(*self.input_dims, self.fc1_dims)
         self.fc2 = nn.Linear(self.fc1_dims, self.fc2_dims)
         self.fc3 = nn.Linear(self.fc2_dims, self.n_actions)
-        self.dropout = nn.Dropout(0.5)
+        # self.dropout = nn.Dropout(0.5)
 
         self.optimizer = optim.Adam(self.parameters(), lr=lr)
         self.scheduler = StepLR(self.optimizer, step_size=2, gamma=0.1)
@@ -54,7 +54,7 @@ class DeepQNetwork(nn.Module):
 
 class Agent():
     def __init__(self, gamma, epsilon, lr, input_dims, batch_size, n_actions,
-            max_mem_size=1000000, eps_end=0.05, eps_dec=5e-4):
+            max_mem_size=1000000, eps_end=0.01, eps_dec=5e-4):
         self.gamma = gamma
         self.epsilon = epsilon
         self.eps_min = eps_end
@@ -111,8 +111,8 @@ class Agent():
         
         batch_index = np.arange(self.batch_size, dtype=np.int32)
 
-        state_batch = T.tensor(self.state_memory[batch]).to(self.Q_eval.device)/6e8
-        new_state_batch = T.tensor(self.new_state_memory[batch]).to(self.Q_eval.device)/6e8
+        state_batch = T.tensor(self.state_memory[batch]).to(self.Q_eval.device)
+        new_state_batch = T.tensor(self.new_state_memory[batch]).to(self.Q_eval.device)
         action_batch = self.action_memory[batch]
         reward_batch = T.tensor(self.reward_memory[batch]).to(self.Q_eval.device)
         terminal_batch = T.tensor(self.terminal_memory[batch]).to(self.Q_eval.device)
@@ -128,7 +128,7 @@ class Agent():
         self.Q_eval.optimizer.step()
         self.Q_eval.scheduler.step()
         self.iter_cntr += 1
-        self.epsilon = self.epsilon - self.eps_dec if self.epsilon > self.eps_min \
+        self.epsilon = self.epsilon * self.eps_dec if self.epsilon > self.eps_min \
                        else self.eps_min
 
         #if self.iter_cntr % self.replace_target == 0:
@@ -172,9 +172,10 @@ def evaluate_model():
         state = env.reset()
         reward = 0
         while not done:
-            action = agent.choose_action(state)
+            action = agent.choose_action(state/6e8)
             old_reward = reward
             new_state, reward, done, info = env.step(action)
+            new_state/=6e8
             diff_reward = abs(reward) - abs(old_reward)
             score+=reward
             agent.store_transition(state,action,reward,new_state,done)
@@ -189,42 +190,22 @@ def evaluate_model():
               'epsilon %.4f' %agent.epsilon,'alpha %.4f' %agent.lr)
         x = [i+1 for i in range(episodes)]
         filename = "epidemic_reward.png"
-    plt.figure()
-    plt.plot(scores)
-    plt.figure()
-    plt.plot(eps_hist)
-    plt.figure()
-    plt.plot(alphas,'r:')
+    f1 = plt.figure()
+    ax1 = f1.add_subplot(111)
+    ax1.plot(scores)
+    f2 = plt.figure()
+    ax2 = f2.add_subplot(111)
+    ax2.plot(eps_hist)
+    plt.show()
+    # plt.figure()
+    # plt.plot(alphas,'r:')
     
 env = virl.Epidemic(stochastic = False, noisy = False)
-agent = Agent(gamma =0.99,epsilon = 1.0,eps_end = 0.01,eps_dec = 1e-3, batch_size = 64,n_actions = 4,input_dims = [4],
+agent = Agent(gamma =0.99,epsilon = 1.0,eps_end = 0.01,eps_dec = 0.9993, batch_size = 64,n_actions = 4,input_dims = [4],
               lr = 0.001)
 scores, eps_hist = [], []       
-episodes = 100
+episodes = 500
 optimize_lr = lambda x,y: x+y
 alphas = []
 sigma = 0.0001
 evaluate_model()
-# pbounds = {'dropout': (0.0, 0.499),
-#            'lr': (0.0, 0.1)
-#           }
-# # pbounds = {
-# #     'lr': (1e-5, 1e-2),
-# #     'l2': (1e-5, 1e-2)
-# #     }
-
-
-# # optimizer = BayesianOptimization(
-# #     f=agent.learn,
-# #     pbounds=pbounds,
-# #     verbose=2,  
-# #     random_state=1,
-# # )
-# optimizer = BayesianOptimization(
-#     f=evaluate_model,
-#     pbounds=pbounds,
-#     verbose=2,  # verbose = 1 prints only when a maximum 
-#     # is observed, verbose = 0 is silent
-#     random_state=1,
-# )
-# optimizer.maximize(init_points=10, n_iter=100)

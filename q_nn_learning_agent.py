@@ -301,29 +301,29 @@ def evaluate_q_nn(episodes,stochastic_train = False,noisy_train = False,stochast
         agent_1 = Agent(gamma =0.99,epsilon = 0.7,eps_end = 0.01,eps_dec = 0.9993, batch_size = 64,n_actions = 4,input_dims = [4],
                       lr = 0.001)
         scores_train_1,eps_hist_1 = evaluate_model(env,episodes,agent_1)
-        # agent_2 = Agent(gamma =0.99,epsilon = 0.7,eps_end = 0.01,eps_dec = 0.9993, batch_size = 64,n_actions = 4,input_dims = [4],
-                    #   lr = 0.001)
-        # scores_train_2,eps_hist_2 = evaluate_model(env,episodes,agent_2)
-        # agent_3 = Agent(gamma =0.99,epsilon = 0.7,eps_end = 0.01,eps_dec = 0.9993, batch_size = 64,n_actions = 4,input_dims = [4],
-        #               lr = 0.001)
-        # scores_train_3,eps_hist_3 = evaluate_model(env,episodes,agent_3)
-        # scores_final = np.array((np.array(scores_train_1)+np.array(scores_train_2)+np.array(scores_train_3)))/3
-        # eps_hist_final = np.array((np.array(eps_hist_1) + np.array(eps_hist_2) + np.array(eps_hist_3)))/3
+        agent_2 = Agent(gamma =0.99,epsilon = 0.7,eps_end = 0.01,eps_dec = 0.9993, batch_size = 64,n_actions = 4,input_dims = [4],
+                      lr = 0.001)
+        scores_train_2,eps_hist_2 = evaluate_model(env,episodes,agent_2)
+        agent_3 = Agent(gamma =0.99,epsilon = 0.7,eps_end = 0.01,eps_dec = 0.9993, batch_size = 64,n_actions = 4,input_dims = [4],
+                      lr = 0.001)
+        scores_train_3,eps_hist_3 = evaluate_model(env,episodes,agent_3)
+        scores_final = np.array((np.array(scores_train_1)+np.array(scores_train_2)+np.array(scores_train_3)))/3
+        eps_hist_final = np.array((np.array(eps_hist_1) + np.array(eps_hist_2) + np.array(eps_hist_3)))/3
         x = [i+1 for i in range(episodes)]
-        # if(noisy_train == True):
-        #     plot_learning_curve(scores_final,x,"Q_nn_plots_noisy/nn_train_q_" + str(problem) + ".png","Train on problem " + str(problem) + "_noisy")
-        # else:
-        #     plot_learning_curve(scores_final,x,"Q_nn_plots/nn_train_q_" + str(problem) + ".png","Train on problem " + str(problem))
+        if(noisy_train == True):
+            plot_learning_curve(scores_final,x,"Q_nn_plots_noisy/nn_train_q_" + str(problem) + ".png","Train on problem " + str(problem) + "_noisy")
+        else:
+            plot_learning_curve(scores_final,x,"Q_nn_plots/nn_train_q_" + str(problem) + ".png","Train on problem " + str(problem))
         best_agent_test = agent_1
-        # best_agent = np.argmax([np.sum(scores_train_1),np.sum(scores_train_2),np.sum(scores_train_3)])
-        # best_agent_train = best_agent + 1
-        # best_agent_test = None
-        # if(best_agent_train == 1):
-        #     best_agent_test = agent_1
-        # elif(best_agent_train == 2):
-        #     best_agent_test = agent_2
-        # else:
-        #     best_agent_test = agent_3
+        best_agent = np.argmax([np.sum(scores_train_1),np.sum(scores_train_2),np.sum(scores_train_3)])
+        best_agent_train = best_agent + 1
+        best_agent_test = None
+        if(best_agent_train == 1):
+            best_agent_test = agent_1
+        elif(best_agent_train == 2):
+            best_agent_test = agent_2
+        else:
+            best_agent_test = agent_3
         plot_learning_curve(scores_train_1,x,"Q_nn_plots/nn_train_q_" + str(problem) + ".png","Train on problem " + str(problem))
         test_epochs = 1
         rewards_test = []

@@ -1,7 +1,9 @@
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-import virl            
+import virl        
+if not os.path.exists('Deterministic'):
+    os.mkdir("Deterministic")    
 
 def policy(states,actions,week,state):
     print("\nStep state (" + str(week) + "): " + "\nSusceptible: " + str(state[0]) + "\nInfectious: " + str(state[1])
@@ -28,7 +30,7 @@ def policy(states,actions,week,state):
     
 def evaluate_deterministic_model(stochastic,noisy):
     
-    problems = [0,1,2,3,4,5,6,7,8,9]
+    problems = [0,4]
     for problem in problems:
         env = virl.Epidemic(stochastic = stochastic, noisy = noisy, problem_id = problem)
         

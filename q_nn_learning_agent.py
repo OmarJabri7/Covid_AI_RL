@@ -10,12 +10,11 @@ from keras import backend as K
 import tensorflow as tf
 from collections import defaultdict
 from torch.optim.lr_scheduler import StepLR
-from bayes_opt import BayesianOptimization
 from collections import namedtuple
 from tqdm import tqdm
 import os
 if not os.path.exists('Q_nn_plots'):
-    os.mkdirs("Q_nn_plots")
+    os.mkdir("Q_nn_plots")
 
 def save_ckp(state, is_best, checkpoint_path, best_model_path):
     """

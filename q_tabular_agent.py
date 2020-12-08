@@ -9,12 +9,11 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 from IPython import get_ipython
 from collections import defaultdict
-from bayes_opt import BayesianOptimization
 from numpy import inf
 import os
 import logging
 if not os.path.exists('Q_tabular'):
-    os.mkdirs("Q_tabular")
+    os.mkdir("Q_tabular")
 
 class QAgent():
     def __init__(self,dim_size,gamma,epsilon,epsilon_decay,epsilon_min,episodes,lr,bins,Nsa,Q):

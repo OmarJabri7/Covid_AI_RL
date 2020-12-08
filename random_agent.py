@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import virl
 if not os.path.exists('Random'):
-    os.mkdirs("Random")
+    os.mkdir("Random")
 
 def plot_learning_curve(scores, x, figure_file):
     plt.figure()

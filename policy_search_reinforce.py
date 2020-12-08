@@ -11,7 +11,7 @@ from tqdm import tqdm
 plt.ioff()
 import os
 if not os.path.exists('Policy_Search'):
-    os.mkdirs("Policy_Search")
+    os.mkdir("Policy_Search")
 
 
 class PolicyNetwork(nn.Module):

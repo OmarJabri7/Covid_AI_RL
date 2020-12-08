@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 plt.ioff() #remove if you want to interactively see the grahs (will be a lot of graphs)
 #evaluate performance of differebt agent and save graphs in the directories, if not exist, the programs will create them.
 
-evaluate_random(stochastic = True, noisy = True) #Random/
+rewards_random = evaluate_random(stochastic = True, noisy = True) #Random/
 
-evaluate_deterministic_model(stochastic = False,noisy = True) #Deterministic/
+rewards_determenistic = evaluate_deterministic_model(stochastic = False,noisy = True) #Deterministic/
 
 rewards_q_tabular = evaluate_q_tabular(500,stochastic_train = False,
                                        noisy_train = False,

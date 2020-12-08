@@ -30,7 +30,8 @@ def policy(states,actions,week,state):
     
 def evaluate_deterministic_model(stochastic,noisy):
     
-    problems = [0,4]
+    problems = [0,1,2,3,4,5,6,7,8,9]
+    rewards_per_problem =  []
     for problem in problems:
         env = virl.Epidemic(stochastic = stochastic, noisy = noisy, problem_id = problem)
         
@@ -81,3 +82,5 @@ def evaluate_deterministic_model(stochastic,noisy):
             figurefile = "deterministic_" + str(problem) + ".png"
         fig.savefig("Deterministic/"  + figurefile)
         print('Total reward', np.sum(rewards))
+        rewards_per_problem.append(np.sum(rewards))
+    return rewards_per_problem

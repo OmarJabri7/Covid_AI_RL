@@ -15,7 +15,8 @@ def plot_learning_curve(scores, x, figure_file):
     plt.savefig(figure_file)
 
 def evaluate_random(stochastic = False, noisy = False):
-    problems = [0,4]
+    rewards_per_problem = []
+    problems = [0,1,2,3,4,5,6,7,8,9]
     for problem in problems:
         env = virl.Epidemic(stochastic = stochastic, noisy = noisy, problem_id=problem)
         
@@ -28,21 +29,12 @@ def evaluate_random(stochastic = False, noisy = False):
         s = env.reset()
         states.append(s)
         print(states)
-        # for i in range(episodes):
-        #     reward_ep = 0
         while not done:
             s,r,done,i = env.step(action= np.random.choice(env.action_space.n))
             states.append(s)
             done_info.append(done)
             info.append(i)
             rewards.append(r)
-        # x = [i+1 for i in range(episodes)]
-        # if(stochastic):
-        #     plot_learning_curve(rewards, x, "Random_stochastic/random_" + str(problem) + "_stochastic.png")
-        # elif(noisy):
-        #     plot_learning_curve(rewards, x, "Random_noisy/random_" + str(problem) + "_noisy.png")
-        # else:            
-        #     plot_learning_curve(rewards, x, "Random/random_" + str(problem) + ".png")
         fig,axes = plt.subplots(1,2,figsize=(20,8))
         labels = ['s[0]: susceptible','s[1]: infectious','s[2]: quarantined','s[3]: recovereds']
         states = np.array(states)
@@ -58,3 +50,5 @@ def evaluate_random(stochastic = False, noisy = False):
         axes[1].set_ylabel('reward r(t)')
         fig.savefig("Random/random_" + str(problem) + ".png")
         print('total reward', np.sum(rewards))
+        rewards_per_problem.append(np.sum(rewards))
+    return rewards_per_problem

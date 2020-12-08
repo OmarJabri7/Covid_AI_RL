@@ -99,7 +99,7 @@ def plot_learning_curve(scores, x, figure_file):
     plt.savefig(figure_file)
 
 def evaluate_policy_search(episodes,stochastic_train = False, noisy_train = False, stochastic_test = False, noisy_test = False):
-    problems = [0,4]
+    problems = [0,1,2,3,4,5,6,7,8,9]
     rewards_per_problem = []
     for problem in problems:
         env = virl.Epidemic(stochastic = stochastic_train, noisy = noisy_train,problem_id = problem)

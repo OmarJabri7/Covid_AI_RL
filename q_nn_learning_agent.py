@@ -15,6 +15,8 @@ from tqdm import tqdm
 import os
 if not os.path.exists('Q_nn_plots'):
     os.mkdir("Q_nn_plots")
+if not os.path.exists('Q_nn_plots_noisy'):
+    os.mkdir('Q_nn_plots_noisy')
 
 def save_ckp(state, is_best, checkpoint_path, best_model_path):
     """
